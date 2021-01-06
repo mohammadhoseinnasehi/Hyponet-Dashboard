@@ -557,6 +557,7 @@ export default {
   },
   mounted() {
     console.log(this.$store.state.filteredframes);
+    this.getdata();
   },
 };
 </script>
