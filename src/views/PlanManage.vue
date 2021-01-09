@@ -88,7 +88,7 @@
         sm="12"
         md="6"
         lg="4"
-        :key="frame.id"
+        :key="frame._id"
       >
         <frame-card :frame="frame"></frame-card>
       </v-col>
@@ -162,7 +162,7 @@ export default {
         // });
         this.$store.state.filteredframes = this.$store.state.frames;
         this.isShow = false;
-        console.log( this.$store.state.frames);
+        console.log('this.$store.state.frames', this.$store.state.frames);
       })
       .catch((e) => {
         console.log(e);

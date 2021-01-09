@@ -328,7 +328,8 @@ export default {
           this.frame.category = this.$t(this.frame.category);
           this.isget = true;
           console.log("url", this.url_low);
-          console.log(this.frame);
+          console.log("in the getdata function", this.frame);
+          console.log("get data is finish");
         })
         .catch((e) => {
           this.isget = true;
@@ -399,7 +400,7 @@ export default {
         formData.append(key, edited_design[key]);
       }
       this.edit_dialog = false;
-      this.$vuetify.goTo(350,{duration:0});
+      this.$vuetify.goTo(350, { duration: 0 });
       this.loading = true;
 
       //*************************************************************************************** */
@@ -476,7 +477,6 @@ export default {
       //***************************************************************************************
       const token = "32323JUHUHIUH63t6253523KSCJKH()1123(22(kir(@)";
       var frame_id = this.$route.params.id;
-
       axios
         .put(
           `https://hyponet.herokuapp.com/api/v1/design/${frame_id}`,
@@ -490,7 +490,20 @@ export default {
         )
         .then((response) => {
           console.log(response.data);
-          this.getData;
+          if (this.$store.state.filteredframes.length > 0) {
+            var ne = this.$store.state.filteredframes.map((frame) => {
+              if (frame._id === frame_id) {
+                return response.data;
+              } else {
+                return frame;
+              }
+            });
+            this.$store.state.filteredframes = ne;
+          }
+
+          // this.getData();
+          // console.log("after get data", this.frame);
+
           this.loading = false;
         })
 
@@ -504,7 +517,7 @@ export default {
       const token = "32323JUHUHIUH63t6253523KSCJKH()1123(22(kir(@)";
       var frame_id = this.$route.params.id;
       this.delete_dialog = false;
-      this.$vuetify.goTo(350,{duration:0});
+      this.$vuetify.goTo(350, { duration: 0 });
       this.isdelete = true;
       axios
         .delete(

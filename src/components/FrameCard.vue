@@ -6,11 +6,15 @@
     :ripple="false"
     :to="{ path: `/planmanage/posts/${frame._id}` }"
   >
-    <v-img :src="`https://hyponet.herokuapp.com${frame.image1}`" height="250px" max-width="350px"></v-img>
+    <v-img
+      :src="`https://hyponet.herokuapp.com${frame.image1}`"
+      height="250px"
+      max-width="350px"
+    ></v-img>
 
     <v-card-title> {{ frame.title }} </v-card-title>
     <v-divider></v-divider>
-    <v-card-subtitle> {{ frame.created_at }} </v-card-subtitle>
+    <v-card-subtitle> {{ dateformatted }} </v-card-subtitle>
 
     <v-card-actions>
       <v-btn color="orange lighten-2" text @click.prevent="show = !show">
@@ -37,6 +41,8 @@
 </template>
 
 <script>
+import moment from "moment-jalaali";
+import "moment/locale/fa";
 export default {
   name: "FrameCard",
   props: { frame: Object },
@@ -44,7 +50,14 @@ export default {
     return { show: false };
   },
   methods: {},
-  computed: {},
+  computed: {
+    dateformatted() {
+      moment.loadPersian({ dialect: "persian-modern" });
+      return this.frame.created_at
+        ? moment(this.frame.created_at).format("jDD / jMM / jYYYY ")
+        : "";
+    },
+  },
 };
 </script>
 
