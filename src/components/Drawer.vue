@@ -25,7 +25,7 @@
 
     <v-list dense>
       <v-list-item
-        class="item"
+        class="item pt-2 pb-2"
         v-for="item in items"
         :key="item.title"
         link
@@ -56,7 +56,12 @@ export default {
         {
           title: "مدیریت طرح ها",
           icon: "mdi-clipboard-edit-outline",
-          link: "/planmanage",
+          link: "/designmanage",
+        },
+        {
+          title: "مدیریت قالب ها",
+          icon: "mdi-clipboard-text-outline",
+          link: "/templatemanage",
         },
         
       ],
@@ -67,5 +72,6 @@ export default {
 <style lang="scss">
 .item:hover {
   background-color: rgba(0, 30, 58, 0.438);
+  
 }
 </style>

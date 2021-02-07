@@ -23,7 +23,7 @@
           <v-row>
             <v-col cols="12" lg="6">
               <v-text-field
-                v-model="frame.title"
+                v-model="design.title"
                 label="نام طرح"
                 filled
                 rounded
@@ -53,7 +53,7 @@
                   ></v-text-field>
                 </template>
                 <v-date-picker
-                  v-model="frame.created_at"
+                  v-model="design.created_at"
                   locale="fa"
                   no-title
                   :first-day-of-week="6"
@@ -63,7 +63,7 @@
             </v-col>
             <v-col cols="12" lg="12">
               <v-autocomplete
-                v-model="frame.category"
+                v-model="design.category"
                 :items="items"
                 deletable-chips
                 chips
@@ -77,7 +77,7 @@
             <v-col cols="12" lg="12">
               <v-textarea
                 label="توضیحات"
-                v-model="frame.subtitle"
+                v-model="design.subtitle"
                 auto-grow
                 filled
                 rounded
@@ -101,7 +101,7 @@
             </v-col>
             <v-col cols="12" lg="12">
               <v-card
-                v-show="frame.image1"
+                v-show="design.image1"
                 max-height="400px"
                 max-width="600px"
                 class="mx-auto rounded-xl"
@@ -132,7 +132,7 @@
             <v-col cols="12" lg="12">
               <v-card
                 max-height="400px"
-                v-show="frame.image2"
+                v-show="design.image2"
                 max-width="600px"
                 class="mx-auto rounded-xl"
               >
@@ -284,7 +284,7 @@ import moment from "moment-jalaali";
 import "moment/locale/fa";
 import axios from "axios";
 export default {
-  name: "FramePost",
+  name: "DesignPost",
   data() {
     return {
       edit_dialog: false,
@@ -295,7 +295,7 @@ export default {
       img1_isload: false,
       img2_isload: false,
       menu: false,
-      frame: {},
+      design: {},
       // items: ["uii", "uxx", "icon", "template", "html"],
       items: [
         "اچ تی ام ال",
@@ -322,13 +322,13 @@ export default {
         .get(`https://hyponet.herokuapp.com/api/v1/design/${idd}`)
         .then((response) => {
           console.log(idd);
-          this.frame = response.data;
-          this.url_low = `https://hyponet.herokuapp.com${this.frame.image1}`;
-          this.url_high = `https://hyponet.herokuapp.com${this.frame.image2}`;
-          this.frame.category = this.$t(this.frame.category);
+          this.design = response.data;
+          this.url_low = `https://hyponet.herokuapp.com${this.design.image1}`;
+          this.url_high = `https://hyponet.herokuapp.com${this.design.image2}`;
+          this.design.category = this.$t(this.design.category);
           this.isget = true;
           console.log("url", this.url_low);
-          console.log("in the getdata function", this.frame);
+          console.log("in the getdata function", this.design);
           console.log("get data is finish");
         })
         .catch((e) => {
@@ -389,10 +389,10 @@ export default {
     // async
     edit() {
       var edited_design = {
-        category: this.$t(this.frame.category),
-        title: this.frame.title,
-        subtitle: this.frame.subtitle,
-        created_at: this.frame.created_at,
+        category: this.$t(this.design.category),
+        title: this.design.title,
+        subtitle: this.design.subtitle,
+        created_at: this.design.created_at,
       };
 
       var formData = new FormData();
@@ -406,7 +406,7 @@ export default {
       //*************************************************************************************** */
       // if (this.image_low === null) {
       //   await axios({
-      //     url: `https://hyponet.herokuapp.com${this.frame.image1}`,
+      //     url: `https://hyponet.herokuapp.com${this.design.image1}`,
       //     method: "GET",
       //     responseType: "arraybuffer",
       //   })
@@ -420,10 +420,10 @@ export default {
       //       let dataURL1 = `data:${response.headers[
       //         "content-type"
       //       ].toLowerCase()};base64,${this.image_low}`;
-      //       console.log(this.dataURLtoFile(dataURL1, this.frame.imageName_1));
+      //       console.log(this.dataURLtoFile(dataURL1, this.design.imageName_1));
       //       formData.append(
       //         "image1",
-      //         this.dataURLtoFile(dataURL1, this.frame.imageName_1)
+      //         this.dataURLtoFile(dataURL1, this.design.imageName_1)
       //       );
       //     })
       //     .catch((e) => {
@@ -439,7 +439,7 @@ export default {
       //*************************************************************************************** */
       // if (this.image_high === null) {
       //   await axios({
-      //     url: `https://hyponet.herokuapp.com${this.frame.image2}`,
+      //     url: `https://hyponet.herokuapp.com${this.design.image2}`,
       //     method: "GET",
       //     responseType: "arraybuffer",
       //   })
@@ -453,10 +453,10 @@ export default {
       //       let dataURL2 = `data:${response.headers[
       //         "content-type"
       //       ].toLowerCase()};base64,${this.image_high}`;
-      //       console.log(this.dataURLtoFile(dataURL2, this.frame.imageName_2));
+      //       console.log(this.dataURLtoFile(dataURL2, this.design.imageName_2));
       //       formData.append(
       //         "image2",
-      //         this.dataURLtoFile(dataURL2, this.frame.imageName_2)
+      //         this.dataURLtoFile(dataURL2, this.design.imageName_2)
       //       );
       //     })
       //     .catch((e) => {
@@ -476,10 +476,10 @@ export default {
       }
       //***************************************************************************************
       const token = "32323JUHUHIUH63t6253523KSCJKH()1123(22(kir(@)";
-      var frame_id = this.$route.params.id;
+      var design_id = this.$route.params.id;
       axios
         .put(
-          `https://hyponet.herokuapp.com/api/v1/design/${frame_id}`,
+          `https://hyponet.herokuapp.com/api/v1/design/${design_id}`,
           formData,
           {
             headers: {
@@ -490,19 +490,19 @@ export default {
         )
         .then((response) => {
           console.log(response.data);
-          if (this.$store.state.filteredframes.length > 0) {
-            var ne = this.$store.state.filteredframes.map((frame) => {
-              if (frame._id === frame_id) {
+          if (this.$store.state.filtereddesigns.length > 0) {
+            var ne = this.$store.state.filtereddesigns.map((design) => {
+              if (design._id === design_id) {
                 return response.data;
               } else {
-                return frame;
+                return design;
               }
             });
-            this.$store.state.filteredframes = ne;
+            this.$store.state.filtereddesigns = ne;
           }
 
           // this.getData();
-          // console.log("after get data", this.frame);
+          // console.log("after get data", this.design);
 
           this.loading = false;
         })
@@ -515,13 +515,13 @@ export default {
     },
     delet() {
       const token = "32323JUHUHIUH63t6253523KSCJKH()1123(22(kir(@)";
-      var frame_id = this.$route.params.id;
+      var design_id = this.$route.params.id;
       this.delete_dialog = false;
       this.$vuetify.goTo(350, { duration: 0 });
       this.isdelete = true;
       axios
         .delete(
-          `https://hyponet.herokuapp.com/api/v1/design/${frame_id}`,
+          `https://hyponet.herokuapp.com/api/v1/design/${design_id}`,
 
           {
             headers: {
@@ -531,14 +531,14 @@ export default {
         )
         .then((response) => {
           console.log(response.data);
-          if (this.$store.state.filteredframes.length > 0) {
-            this.$store.state.filteredframes = this.$store.state.filteredframes.filter(
-              (frame) => {
-                return frame._id !== frame_id;
+          if (this.$store.state.filtereddesigns.length > 0) {        
+            this.$store.state.filtereddesigns = this.$store.state.filtereddesigns.filter(
+              (design) => {
+                return design._id !== design_id;
               }
             );
           }
-          this.$router.push({ name: "Planmanage" });
+          this.$router.push({ name: "Designmanage" });
           this.isdelete = false;
         })
         .catch(function (e) {
@@ -554,8 +554,8 @@ export default {
     $route: function (to, from) {
       // console.log(to)
       console.log(from);
-      if (to.name == "Posts") {
-        this.frame = {};
+      if (to.name == "DesignPosts") {
+        this.design = {};
         this.getdata();
       }
     },
@@ -563,13 +563,13 @@ export default {
   computed: {
     dateformatted() {
       moment.loadPersian({ dialect: "persian-modern" });
-      return this.frame.created_at
-        ? moment(this.frame.created_at).format("jDD / jMM / jYYYY ")
+      return this.design.created_at
+        ? moment(this.design.created_at).format("jDD / jMM / jYYYY ")
         : "";
     },
   },
   mounted() {
-    console.log(this.$store.state.filteredframes);
+    console.log(this.$store.state.filtereddesigns);
     this.getdata();
   },
 };

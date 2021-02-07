@@ -12,7 +12,6 @@
           lang="en"
           v-model="values"
           :items="items"
-          deletable-chips
           chips
           color="rgb(1, 8, 77)"
           item-color="rgb(1, 8, 77)"
@@ -43,7 +42,7 @@
           elevation="10"
           large
           text
-          @click.stop="$store.state.show = true"
+          @click.stop="$store.state.designshow = true"
         >
           افزودن طرح
           <v-icon right> mdi-plus-circle-outline </v-icon>
@@ -51,11 +50,11 @@
       </v-col>
     </v-row>
 
-    <add-frame></add-frame>
+    <add-design></add-design>
     <!-- <v-row>
       <v-col>
         <skeleton-card v-if="isshow"></skeleton-card>
-        <frame-card v-if="!isshow" :frame="frame"></frame-card>
+        <design-card v-if="!isshow" :design="design"></design-card>
       </v-col>
     </v-row> -->
 
@@ -81,28 +80,28 @@
 
     <v-row class="roww pt-10 mt-16 pb-10" v-if="!isShow && !isempty">
       <v-col
-        v-for="frame in $store.state.filteredframes"
+        v-for="design in $store.state.filtereddesigns"
         class="mt-10"
         cols="12"
         xs="12"
         sm="12"
         md="6"
         lg="4"
-        :key="frame._id"
+        :key="design._id"
       >
-        <frame-card :frame="frame"></frame-card>
+        <design-card :design="design"></design-card>
       </v-col>
     </v-row>
   </v-container>
 </template>
 <script>
 import axios from "axios";
-import FrameCard from "../components/FrameCard.vue";
+import DesignCard from "../components/DesignCard.vue";
 import SkeletonCard from "../components/SkeletonCard.vue";
-import AddFrame from "../components/AddFrame.vue";
+import AddDesign from "../components/AddDesign.vue";
 export default {
-  name: "PlanManage",
-  components: { SkeletonCard, AddFrame, FrameCard },
+  name: "DesignManage",
+  components: { SkeletonCard, AddDesign, DesignCard },
   data() {
     return {
       isShow: true,
@@ -123,9 +122,9 @@ export default {
     showbyCat(val) {
       console.log(val);
       {
-        this.$store.state.filteredframes = this.$store.state.frames.filter(
-          (frame) => {
-            return frame.category == this.$t(val);
+        this.$store.state.filtereddesigns = this.$store.state.designs.filter(
+          (design) => {
+            return design.category == this.$t(val);
           }
         );
       }
@@ -134,7 +133,7 @@ export default {
   watch: {
     values: function (val) {
       if (!val) {
-        this.$store.state.filteredframes = this.$store.state.frames;
+        this.$store.state.filtereddesigns = this.$store.state.designs;
       }
     },
     forwatch: function (val) {
@@ -147,22 +146,22 @@ export default {
     },
   },
   mounted() {
-    // console.log(this.$store.state.frames)
-    // this.$store.state.filteredframes = this.$store.state.frames;
+    // console.log(this.$store.state.designs)
+    // this.$store.state.filtereddesigns = this.$store.state.designs;
     // console.log(this.$store.state.show);
   },
   async created() {
     await axios
       .get(`https://hyponet.herokuapp.com/api/v1/design`)
       .then((response) => {
-        this.$store.state.frames = response.data.designs;
-        // console.log("before translate", this.$store.state.frames);
-        // this.$store.state.frames.forEach((item) => {
+        this.$store.state.designs = response.data.designs;
+        // console.log("before translate", this.$store.state.designs);
+        // this.$store.state.designs.forEach((item) => {
         //   item.category = this.$t(item.category);
         // });
-        this.$store.state.filteredframes = this.$store.state.frames;
+        this.$store.state.filtereddesigns = this.$store.state.designs;
         this.isShow = false;
-        console.log('this.$store.state.frames', this.$store.state.frames);
+        console.log("this.$store.state.designs", this.$store.state.designs);
       })
       .catch((e) => {
         console.log(e);
@@ -170,7 +169,7 @@ export default {
   },
   computed: {
     forwatch() {
-      return this.$store.state.filteredframes;
+      return this.$store.state.filtereddesigns;
     },
   },
 };
@@ -178,7 +177,7 @@ export default {
 
 <style lang="scss" scoped >
 .roww {
-  background-color: #e0e0e0;
+  background-color: #c4c4c4;
   height: 100%;
 }
 

@@ -1,7 +1,7 @@
 <template>
   <v-row justify="center">
     <v-dialog
-      v-model="$store.state.show"
+      v-model="$store.state.templateshow"
       transition="dialog-bottom-transition"
       persistent
       :scrollable="true"
@@ -10,7 +10,7 @@
       <v-card max-height="600px">
         <v-toolbar color="rgb(1, 8, 50)">
           <v-toolbar-title class="white--text"
-            ><h5>افزودن طرح</h5></v-toolbar-title
+            ><h5>افزودن قالب</h5></v-toolbar-title
           >
           <v-spacer></v-spacer>
           <v-btn icon class="" dark @click.stop="hide()">
@@ -23,7 +23,7 @@
               <v-col cols="12" lg="6">
                 <v-text-field
                   v-model="name"
-                  label="نام طرح"
+                  label="نام قالب"
                   filled
                   rounded
                   dense
@@ -60,11 +60,10 @@
                   </v-date-picker>
                 </v-menu>
               </v-col>
-              <v-col cols="12" lg="12">
+              <v-col cols="10" lg="10">
                 <v-autocomplete
                   v-model="values"
-                  :items="items"
-                  deletable-chips
+                  :items="special ? specialitems : regularitems"
                   chips
                   color="rgb(1, 8, 77)"
                   item-color="rgb(1, 8, 77)"
@@ -73,6 +72,9 @@
                   prefix="دسته بندی ها :"
                 ></v-autocomplete>
                 <!-- <p>{{ $t("uii") }}</p> -->
+              </v-col>
+              <v-col cols="2" lg="2">
+                <v-checkbox v-model="special" label="اختصاصی"></v-checkbox>
               </v-col>
               <v-col cols="12" lg="12">
                 <v-textarea
@@ -86,10 +88,20 @@
                 ></v-textarea>
               </v-col>
               <v-col cols="12" lg="12">
+                <v-text-field
+                  v-model="demolink"
+                  label="لینک دمو"
+                  filled
+                  rounded
+                  dense
+                ></v-text-field>
+              </v-col>
+
+              <v-col cols="12" lg="12">
                 <v-file-input
-                  @change="previewimage(image_low)"
-                  v-model="image_low"
-                  label="تصویر طرح ( با کیفیت پایین )"
+                  @change="previewimage(image)"
+                  v-model="image"
+                  label="تصویر قالب "
                   filled
                   rounded
                   prepend-icon=""
@@ -102,36 +114,11 @@
               <v-col cols="12" lg="12">
                 <v-card
                   max-height="400px"
-                  v-show="url_low"
+                  v-show="url"
                   max-width="600px"
                   class="mx-auto rounded-xl"
                 >
-                  <v-img :src="url_low" max-height="400px" max-width="600px">
-                  </v-img>
-                </v-card>
-              </v-col>
-              <v-col cols="12" lg="12">
-                <v-file-input
-                  @change="previewimage(image_high)"
-                  v-model="image_high"
-                  label="تصویر طرح ( با کیفیت بالا )"
-                  prepend-icon=""
-                  filled
-                  rounded
-                  show-size
-                  truncate-length="50"
-                  dense
-                  append-icon="mdi-camera"
-                ></v-file-input>
-              </v-col>
-              <v-col cols="12" lg="12">
-                <v-card
-                  max-height="400px"
-                  v-show="url_high"
-                  max-width="600px"
-                  class="mx-auto rounded-xl"
-                >
-                  <v-img :src="url_high" max-height="400px" max-width="600px">
+                  <v-img :src="url" max-height="400px" max-width="600px">
                   </v-img>
                 </v-card>
               </v-col>
@@ -174,52 +161,55 @@ import moment from "moment-jalaali";
 import "moment/locale/fa";
 // import AutoComplete from "../components/AutoComplete.vue";
 export default {
-  name: "AddFrame",
+  name: "AddDesign",
   components: {},
   data() {
     return {
       name: "",
+      demolink: "",
+      special: false,
       date: new Date().toISOString().substr(0, 10),
       menu: false,
       description: "",
-      image_low: null,
-      image_high: null,
-      url_low: null,
-      url_high: null,
+      image: null,
+      url: null,
       // items: ["uii", "uxx", "icon", "template", "html"],
-      items: [
-        "اچ تی ام ال",
-        "قالب آماده",
-        "آیکون",
-        "تجربه کاربری",
-        "رابط کاربری",
+      regularitems: [
+        "شرکتی",
+        "شخصی",
+        "فروشگاهی",
+        "آموزشی",
+        "املاک",
+        "هتل و رستوران",
       ],
+      specialitems: ["املاک", "گردشگری", "استارتاپی"],
       values: "",
       loading: false,
     };
   },
   methods: {
     hide() {
-      this.$store.state.show = false;
+      this.$store.state.templateshow = false;
     },
 
     send() {
       this.loading = true;
-      this.$store.state.show = false;
-      var new_design = {
+      this.$store.state.templateshow = false;
+      var new_template = {
         category: this.$t(this.values),
         title: this.name,
         subtitle: this.description,
         created_at: this.date,
+        url: this.demolink,
+        special: this.special,
       };
 
       var formData = new FormData();
-      for (var key in new_design) {
-        formData.append(key, new_design[key]);
+      for (var key in new_template) {
+        formData.append(key, new_template[key]);
       }
       // console.log("this.image_low",this.image_low)
-      formData.append("image1", this.image_low);
-      formData.append("image2", this.image_high);
+      formData.append("image", this.image);
 
       console.log(this.date);
       console.log(typeof this.date);
@@ -230,7 +220,7 @@ export default {
       var that = this;
       const token = "32323JUHUHIUH63t6253523KSCJKH()1123(22(kir(@)";
       axios
-        .post("https://hyponet.herokuapp.com/api/v1/design", formData, {
+        .post("https://hyponet.herokuapp.com/api/v1/theme", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
             Authorization: token,
@@ -238,7 +228,18 @@ export default {
         })
         .then((response) => {
           that.loading = false;
-          this.$store.state.filteredframes.push(response.data);
+          if (response.data.special == true) {
+            this.$store.state.specialtemplates.push(response.data);
+          }
+          // if (this.$store.state.isspecial == true && response.data.special == true) {
+          //   this.$store.state.finaltemplates.push(response.data);
+          // }
+          if (response.data.special == false) {
+            this.$store.state.regulartemplates.push(response.data);
+          }
+          // if (this.$store.state.isregular == true && response.data.special == false) {
+          //   this.$store.state.finaltemplates.push(response.data);
+          // }
           console.log(response.data);
         })
 
@@ -249,19 +250,10 @@ export default {
     },
 
     previewimage(image) {
-      if (image == this.image_low) {
-        if (!image) {
-          this.url_low = null;
-        } else {
-          this.url_low = URL.createObjectURL(image);
-        }
-      }
-      if (image == this.image_high) {
-        if (!image) {
-          this.url_high = null;
-        } else {
-          this.url_high = URL.createObjectURL(image);
-        }
+      if (!image) {
+        this.url = null;
+      } else {
+        this.url = URL.createObjectURL(image);
       }
     },
   },
@@ -270,15 +262,15 @@ export default {
     //   localStorage.setItem("id", this.$store.state.id);
     // }
     // console.log(localStorage.id);
-    // if (localStorage.frame) {
-    //   var saved = JSON.parse(localStorage.frame);
+    // if (localStorage.design) {
+    //   var saved = JSON.parse(localStorage.design);
     //   var that = this;
     //   saved.forEach(function (i) {
-    //     that.$store.state.frames.push(i);
+    //     that.$store.state.designs.push(i);
     //   });
     //   console.log("yes");
     // }
-    // console.log(this.$store.state.frames);
+    // console.log(this.$store.state.designs);
   },
   computed: {
     dateformatted() {

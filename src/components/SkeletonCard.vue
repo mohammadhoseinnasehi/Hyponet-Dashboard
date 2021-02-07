@@ -1,8 +1,8 @@
 <template>
   <v-skeleton-loader
-    class="mx-auto"
+    class="mx-auto "
     max-width="400"
-    height="350px"
+    height="280px"
     type="card"
   ></v-skeleton-loader>
 </template>
@@ -15,5 +15,6 @@ export default {
 <style lang="scss" scoped>
 .v-skeleton-loader {
   border-radius: 10px !important;
+  background-color: #fff;
 }
 </style>

@@ -293,7 +293,7 @@ export default {
   border-radius: 20px !important;
 }
 </style>
-*******************************Add Frame***********************************
+*******************************Add design***********************************
 <template>
   <v-row justify="center">
     <v-dialog
@@ -461,7 +461,7 @@ import moment from "moment-jalaali";
 import "moment/locale/fa";
 // import AutoComplete from "../components/AutoComplete.vue";
 export default {
-  name: "AddFrame",
+  name: "Adddesign",
   components: {},
   data() {
     return {
@@ -548,15 +548,15 @@ export default {
     //   localStorage.setItem("id", this.$store.state.id);
     // }
     // console.log(localStorage.id);
-    // if (localStorage.frame) {
-    //   var saved = JSON.parse(localStorage.frame);
+    // if (localStorage.design) {
+    //   var saved = JSON.parse(localStorage.design);
     //   var that = this;
     //   saved.forEach(function (i) {
-    //     that.$store.state.frames.push(i);
+    //     that.$store.state.designs.push(i);
     //   });
     //   console.log("yes");
     // }
-    // console.log(this.$store.state.frames);
+    // console.log(this.$store.state.designs);
   },
   computed: {
     dateformatted() {
@@ -623,32 +623,32 @@ export default {
       </v-col>
     </v-row>
 
-    <add-frame></add-frame>
+    <add-design></add-design>
 
     <v-row class="roww pt-10 mt-16">
       <v-col
-        v-for="frame in $store.state.frames"
+        v-for="design in $store.state.designs"
         cols="12"
         xs="12"
         sm="12"
         md="6"
         lg="4"
-        :key="frame.id"
+        :key="design.id"
       >
         <skeleton-card v-if="isShow"></skeleton-card>
-        <frame-card v-if="!isShow" :frame="frame"></frame-card>
+        <design-card v-if="!isShow" :design="design"></design-card>
       </v-col>
     </v-row>
   </v-container>
 </template>
 <script>
-import FrameCard from "../components/FrameCard.vue";
+import designCard from "../components/designCard.vue";
 import SkeletonCard from "../components/SkeletonCard.vue";
 import AutoComplete from "../components/AutoComplete.vue";
-import AddFrame from "../components/AddFrame.vue";
+import Adddesign from "../components/Adddesign.vue";
 export default {
   name: "PlanManage",
-  components: { AutoComplete, SkeletonCard, AddFrame, FrameCard },
+  components: { AutoComplete, SkeletonCard, Adddesign, designCard },
   data() {
     return {
       isShow: true,
@@ -665,7 +665,7 @@ export default {
     },
     // add(value) {
     //   console.log(value);
-    //   this.frames.push(value);
+    //   this.designs.push(value);
     // },
   },
   computed: {},
@@ -747,32 +747,32 @@ button:hover {
       </v-col>
     </v-row>
 
-    <add-frame></add-frame>
+    <add-design></add-design>
 
     <v-row class="roww pt-10 mt-16">
       <v-col
-        v-for="frame in $store.state.filteredframes"
+        v-for="design in $store.state.filtereddesigns"
         cols="12"
         xs="12"
         sm="12"
         md="6"
         lg="4"
-        :key="frame.id"
+        :key="design.id"
       >
         <skeleton-card v-if="isShow"></skeleton-card>
-        <frame-card v-if="!isShow" :frame="frame"></frame-card>
+        <design-card v-if="!isShow" :design="design"></design-card>
       </v-col>
     </v-row>
   </v-container>
 </template>
 <script>
-import FrameCard from "../components/FrameCard.vue";
+import designCard from "../components/designCard.vue";
 import SkeletonCard from "../components/SkeletonCard.vue";
 // import AutoComplete from "../components/AutoComplete.vue";
-import AddFrame from "../components/AddFrame.vue";
+import Adddesign from "../components/Adddesign.vue";
 export default {
   name: "PlanManage",
-  components: { SkeletonCard, AddFrame, FrameCard },
+  components: { SkeletonCard, Adddesign, designCard },
   data() {
     return {
       isShow: true,
@@ -794,12 +794,12 @@ export default {
     showbyCat(val) {
       console.log(val);
       // if (!val) {
-      //   this.$store.state.filteredframes = this.$store.state.frames;
+      //   this.$store.state.filtereddesigns = this.$store.state.designs;
       // } else
       {
-        this.$store.state.filteredframes = this.$store.state.frames.filter(
-          (frame) => {
-            return frame.category == val;
+        this.$store.state.filtereddesigns = this.$store.state.designs.filter(
+          (design) => {
+            return design.category == val;
           }
         );
       }
@@ -812,13 +812,13 @@ export default {
   watch: {
     values: function (val) {
       if (!val) {
-        this.$store.state.filteredframes = this.$store.state.frames;
+        this.$store.state.filtereddesigns = this.$store.state.designs;
       }
     },
   },
   computed: {},
   mounted() {
-    this.$store.state.filteredframes = this.$store.state.frames;
+    this.$store.state.filtereddesigns = this.$store.state.designs;
     console.log(this.$store.state.show);
 
     this.timing();
@@ -851,9 +851,9 @@ const store = new Vuex.Store({
         show: false,
         id: 12,
         value: '',
-        filteredframes: [],
-        // frames: [],
-        frames: [{
+        filtereddesigns: [],
+        // designs: [],
+        designs: [{
                 id: 0,
                 name: "طرح شماره اول",
                 date: "14-08-1378",
@@ -954,15 +954,15 @@ const store = new Vuex.Store({
     },
     mutations: {
         // showcat(state, val) {
-        //     state.frames = state.frames.filter((frame) => {
-        //         return frame.category == val;
+        //     state.designs = state.designs.filter((design) => {
+        //         return design.category == val;
         //     });
         // }
     },
     getters: {
         // filtered: (state) => {
-        //     return state.frames.filter(frame => {
-        //         return (frame.category == state.value);
+        //     return state.designs.filter(design => {
+        //         return (design.category == state.value);
         //     })
         // }
     },
@@ -977,33 +977,33 @@ export default store
 
 <v-row class="roww pt-10 mt-16">
       <v-col
-        v-for="frame in $store.state.filteredframes"
+        v-for="design in $store.state.filtereddesigns"
         cols="12"
         xs="12"
         sm="12"
         md="6"
         lg="4"
-        :key="frame.id"
+        :key="design.id"
       >
         <skeleton-card v-if="isShow"></skeleton-card>
-        <frame-card v-if="!isShow" :frame="frame"></frame-card>
+        <design-card v-if="!isShow" :design="design"></design-card>
       </v-col>
     </v-row>
 
-****************************************framepost**************************
+****************************************designpost**************************
 
 <template>
   <v-container fluid class="pt-0">
     <v-row>
       <v-toolbar>
-        <v-toolbar-title>{{ frame.title }}</v-toolbar-title>
+        <v-toolbar-title>{{ design.title }}</v-toolbar-title>
       </v-toolbar>
     </v-row>
     <v-row v-if="!isload">
       <v-col cols="6">
         <v-card class="mx-auto rounded-xl">
           <v-img
-            :src="`https://hyponet.herokuapp.com${frame.image2}`"
+            :src="`https://hyponet.herokuapp.com${design.image2}`"
             max-height="400"
           ></v-img>
         </v-card>
@@ -1012,7 +1012,7 @@ export default store
         <v-hover v-slot="{ hover }">
           <v-card class="mx-auto rounded-xl">
             <v-img
-              :src="`https://hyponet.herokuapp.com${frame.image1}`"
+              :src="`https://hyponet.herokuapp.com${design.image1}`"
               max-height="400"
             >
               <v-expand-transition>
@@ -1041,11 +1041,11 @@ export default store
 <script>
 import axios from "axios";
 export default {
-  name: "FramePost",
+  name: "designPost",
   data() {
     return {
       isload: true,
-      frame: {},
+      design: {},
     };
   },
   methods: {
@@ -1057,7 +1057,7 @@ export default {
         .then((response) => {
           console.log(idd);
           console.log(response.data);
-          this.frame = response.data;
+          this.design = response.data;
           this.isload = false;
         })
         .catch((e) => {
@@ -1074,7 +1074,7 @@ export default {
       // console.log(to)
       console.log(from);
       if (to.name == "Posts") {
-        this.frame = {};
+        this.design = {};
         this.getdata();
       }
     },
@@ -1095,10 +1095,10 @@ export default {
 
 async edit() {
       var edited_design = {
-        category: this.frame.category,
-        title: this.frame.title,
-        subtitle: this.frame.subtitle,
-        created_at: this.frame.created_at,
+        category: this.design.category,
+        title: this.design.title,
+        subtitle: this.design.subtitle,
+        created_at: this.design.created_at,
       };
 
       var formData = new FormData();
@@ -1110,7 +1110,7 @@ async edit() {
       if (this.image_low === null) {
         let that = this;
         await axios({
-          url: `https://hyponet.herokuapp.com${this.frame.image1}`,
+          url: `https://hyponet.herokuapp.com${this.design.image1}`,
           method: "GET",
           responseType: "arraybuffer",
         })
@@ -1148,7 +1148,7 @@ async edit() {
       // if (this.image_high === null) {
       //   let that = this;
       //   this.image_high = await axios
-      //     .get(`https://hyponet.herokuapp.com${this.frame.image2}`)
+      //     .get(`https://hyponet.herokuapp.com${this.design.image2}`)
       //     .then((response) => {
       //       console.log("getting image");
       //       that.image_high = response.data;
@@ -1168,10 +1168,10 @@ async edit() {
       //***************************************************************************************
       // let that = this;
       // const token = "32323JUHUHIUH63t6253523KSCJKH()1123(22(kir(@)";
-      // var frame_id = this.$route.params.id;
+      // var design_id = this.$route.params.id;
       // axios
       //   .put(
-      //     `https://hyponet.herokuapp.com/api/v1/design/${frame_id}`,
+      //     `https://hyponet.herokuapp.com/api/v1/design/${design_id}`,
       //     formData,
       //     {
       //       headers: {

@@ -4,24 +4,30 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
     state: {
-        show: false,
-        id: 12,
+        designshow: false,
+        templateshow: false,
         value: '',
-        filteredframes: [],
-        frames: [],
+        isregular: true,
+        isspecial: false,
+        filtereddesigns: [],
+        designs: [],
+        regulartemplates: [],
+        specialtemplates: [],
+        finaltemplates: [],
+        filteredtemplates: [],
 
     },
     mutations: {
         // showcat(state, val) {
-        //     state.frames = state.frames.filter((frame) => {
-        //         return frame.category == val;
+        //     state.designs = state.designs.filter((design) => {
+        //         return design.category == val;
         //     });
         // }
     },
     getters: {
         // filtered: (state) => {
-        //     return state.frames.filter(frame => {
-        //         return (frame.category == state.value);
+        //     return state.designs.filter(design => {
+        //         return (design.category == state.value);
         //     })
         // }
     },
