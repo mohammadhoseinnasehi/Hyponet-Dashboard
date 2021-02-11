@@ -63,6 +63,11 @@ export default {
           icon: "mdi-clipboard-text-outline",
           link: "/templatemanage",
         },
+        {
+          title: "مدیریت دسته بندی",
+          icon: "mdi-clipboard-text-outline",
+          link: "/categorymanage",
+        },
         
       ],
     };

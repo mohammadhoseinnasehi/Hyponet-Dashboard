@@ -6,6 +6,7 @@ const store = new Vuex.Store({
     state: {
         designshow: false,
         templateshow: false,
+        categoryshow: false,
         value: '',
         isregular: true,
         isspecial: false,
@@ -15,6 +16,7 @@ const store = new Vuex.Store({
         specialtemplates: [],
         finaltemplates: [],
         filteredtemplates: [],
+        categories: [],
 
     },
     mutations: {

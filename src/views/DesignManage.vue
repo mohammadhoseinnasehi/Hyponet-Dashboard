@@ -106,7 +106,7 @@ export default {
     return {
       isShow: true,
       isempty: false,
-      isActive: true,
+      // isActive: true,
       // items: ["uii", "uxx", "icon", "template", "html"],
       items: [
         "اچ تی ام ال",

@@ -5,6 +5,7 @@ import DesignManage from '../views/DesignManage.vue'
 import Templatemanage from '../views/TemplateManage.vue'
 import DesignPost from '../views/DesignPost'
 import TemplatePost from '../views/TemplatePost.vue'
+import CategoryManage from '../views/CategoryManage.vue'
 
 Vue.use(VueRouter)
 
@@ -41,6 +42,11 @@ const routes = [{
         path: '/templatemanage/posts/:id',
         name: 'TemplatePosts',
         component: TemplatePost,
+    },
+    {
+        path: '/categorymanage',
+        name: 'CategoryManage',
+        component: CategoryManage,
     },
 ]
 

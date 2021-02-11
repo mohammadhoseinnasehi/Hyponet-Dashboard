@@ -475,7 +475,7 @@ export default {
         console.log(pair[0] + ", " + pair[1]);
       }
       //***************************************************************************************
-      const token = "32323JUHUHIUH63t6253523KSCJKH()1123(22(kir(@)";
+      const token = "32323JUHUHIUH63t6253523KSCJKH()1123(22((@)";
       var design_id = this.$route.params.id;
       axios
         .put(
@@ -514,7 +514,7 @@ export default {
       //***************************************************************************************
     },
     delet() {
-      const token = "32323JUHUHIUH63t6253523KSCJKH()1123(22(kir(@)";
+      const token = "32323JUHUHIUH63t6253523KSCJKH()1123(22((@)";
       var design_id = this.$route.params.id;
       this.delete_dialog = false;
       this.$vuetify.goTo(350, { duration: 0 });

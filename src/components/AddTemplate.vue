@@ -218,7 +218,7 @@ export default {
         console.log(pair[0] + ", " + pair[1]);
       }
       var that = this;
-      const token = "32323JUHUHIUH63t6253523KSCJKH()1123(22(kir(@)";
+      const token = "32323JUHUHIUH63t6253523KSCJKH()1123(22((@)";
       axios
         .post("https://hyponet.herokuapp.com/api/v1/theme", formData, {
           headers: {
