@@ -26,59 +26,89 @@
     <add-category></add-category>
     <!-- ******************************************************************* -->
     <v-data-table
+      v-if="isShow"
       :headers="headers"
+      :items-per-page="100"
+      hide-default-footer
+      
       :items="$store.state.categories"
       sort-by="type"
-      class="elevation-1"
+      class="elevation-1 mb-4"
     >
       <template v-slot:top>
         <v-toolbar flat>
-          <v-toolbar-title>My CRUD</v-toolbar-title>
-          <v-divider class="mx-4" inset vertical></v-divider>
-          <v-spacer></v-spacer>
-          <v-dialog v-model="dialog" max-width="500px">
-            <template v-slot:activator="{ on, attrs }">
+          <!-- <v-toolbar-title>دسته بندی ها</v-toolbar-title> -->
+          <!-- ******************************************************************* -->
+
+          <v-dialog
+            v-model="editdialog"
+            transition="dialog-bottom-transition"
+            persistent
+            :scrollable="true"
+            max-width="1000px"
+          >
+            <!-- <template v-slot:activator="{ on, attrs }">
               <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
                 New Item
               </v-btn>
-            </template>
+            </template> -->
             <v-card>
-              <v-card-title>
-                <span class="headline">{{ formTitle }}</span>
-              </v-card-title>
-
+              <v-toolbar color="rgb(1, 8, 50)">
+                <v-toolbar-title class="white--text"
+                  ><h5>ویرایش دسته بندی</h5></v-toolbar-title
+                >
+                <v-spacer></v-spacer>
+                <v-btn icon dark @click.stop="hide()">
+                  <v-icon>mdi-close</v-icon>
+                </v-btn>
+              </v-toolbar>
               <v-card-text>
                 <v-container>
                   <v-row>
-                    <v-col cols="12" sm="6" md="4">
+                    <v-col cols="6" lg="6">
                       <v-text-field
                         v-model="edited.title"
-                        label="Dessert name"
+                        label="نام دسته بندی (انگلیسی)"
+                        filled
+                        rounded
+                        dense
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="12" sm="6" md="4">
+                    <v-col cols="6" lg="6">
                       <v-text-field
                         v-model="edited.persian"
-                        label="Calories"
+                        label="نام دسته بندی (فارسی)"
+                        filled
+                        rounded
+                        dense
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field
-                        v-model="edited.type"
-                        label="Fat (g)"
-                      ></v-text-field>
+                    <v-col cols="12" lg="12">
+                      <v-autocomplete
+                        v-model="values"
+                        :items="items"
+                        chips
+                        color="rgb(1, 8, 77)"
+                        item-color="rgb(1, 8, 77)"
+                        rounded
+                        filled
+                        prefix=" نوع دسته بندی  :"
+                      ></v-autocomplete>
+                    </v-col>
+                    <v-col cols="3">
+                      <v-btn
+                        @click="edit()"
+                        color="rgb(1, 8, 77)"
+                        rounded
+                        elevation="10"
+                        large
+                        text
+                        >اعمال تغییرات</v-btn
+                      >
                     </v-col>
                   </v-row>
                 </v-container>
               </v-card-text>
-
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="close">
-                  Cancel
-                </v-btn>
-                <v-btn color="blue darken-1" text @click="save"> Save </v-btn>
-              </v-card-actions>
             </v-card>
           </v-dialog>
           <v-dialog v-model="dialogDelete" max-width="500px">
@@ -98,32 +128,58 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
+
+          <!-- ******************************************************************* -->
         </v-toolbar>
       </template>
-      <template v-slot:item="{ item }">
-        <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
-        <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
+      <template v-slot:item.actions="{ item }">
+        <v-icon class="mr-4" @click="editItem(item)"> mdi-pencil </v-icon>
+        <v-icon class="mr-8" @click="deleteItem(item)"> mdi-delete </v-icon>
       </template>
       <template v-slot:no-data>
-        <v-btn color="primary" @click="initialize"> Reset </v-btn>
-      </template>
-    </v-data-table>
-    <!-- ******************************************************************* -->
-
-    <!-- <v-row class="roww pt-10 mt-16 pb-10" v-if="isShow">
-      <v-col v-for="i in 12" cols="12" xs="12" sm="12" md="6" lg="4" :key="i">
-      
-        <skeleton-card></skeleton-card>
-      </v-col>
-    </v-row> -->
-
-    <!-- <v-row v-if="isempty" class="roww pt-10 mt-16 pb-10">
-      <v-col class="d-flex justify-center">
         <div>
           طرحی موجود نیست .... <v-icon>mdi-emoticon-neutral-outline</v-icon>
         </div>
+      </template>
+    </v-data-table>
+    <v-overlay :value="loading" absolute z-index="10000">
+      <v-container justify-content-center>
+        <v-row>
+          <v-col>
+            <v-progress-circular
+              class="mx-auto"
+              indeterminate
+              size="64"
+            ></v-progress-circular>
+            <div class="mt-6 mx-auto">در حال اعمال تغییرات ...</div>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-overlay>
+    <!-- ******************************************************************* -->
+    <v-overlay :value="!isShow" absolute z-index="10000">
+      <v-container justify-content-center>
+        <v-row>
+          <v-col>
+            <v-progress-circular
+              class="mx-auto"
+              indeterminate
+              size="64"
+            ></v-progress-circular>
+            <div class="mt-6 mx-auto">در حال بارگذاری اطلاعات ...</div>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-overlay>
+
+    <v-row v-if="isempty" class="roww pt-10 mt-16 pb-10">
+      <v-col class="d-flex justify-center">
+        <div>
+          هیچ دسته بندی وجود ندارد ....
+          <v-icon>mdi-emoticon-neutral-outline</v-icon>
+        </div>
       </v-col>
-    </v-row> -->
+    </v-row>
   </v-container>
 </template>
 <script>
@@ -135,33 +191,103 @@ export default {
   components: { AddCategory },
   data() {
     return {
-      isShow: true,
+      isShow: false,
+      loading: false,
       isempty: false,
-      edited: [],
+      items: ["طرح", "قالب", "موشن گرافی"],
+      values: "",
+      edited: {},
       editdialog: false,
       deletedialog: false,
       headers: [
-        { text: "عنوان (فارسی)", value: "persian" },
-        { text: "عنوان (انگلیسی)", value: "title" },
-        { text: "دسته بندی", value: "type" },
+        {
+          text: "عنوان (فارسی)",
+          value: "persian",
+          align: "center",
+          sortable: false,
+        },
+        {
+          text: "عنوان (انگلیسی)",
+          value: "title",
+          align: "center",
+          sortable: false,
+        },
+        { text: "دسته بندی", value: "type", align: "center" },
+        {
+          text: "عملیات ها",
+          value: "actions",
+          align: "center",
+          sortable: false,
+        },
       ],
     };
   },
-  methods: {},
+  methods: {
+    hide() {
+      this.editdialog = false;
+    },
+    editItem(item) {
+      console.log("item", item);
+      this.edited = item;
+      this.values = this.$t(this.edited.type);
+      this.editdialog = true;
+    },
+    edit() {
+      console.log("edited", this.edited);
+      var editedcategory = {};
+      editedcategory.type = this.$t(this.values);
+      editedcategory.persian = this.edited.persian;
+      editedcategory.title = this.edited.title;
+      console.log("editedcategory", editedcategory);
+      const token = "32323JUHUHIUH63t6253523KSCJKH()1123(22((@)";
+      this.editdialog = false;
+      this.loading = true;
+      // var id = this.edited['_id'];
+      axios
+        .put(
+          `https://hyponet.herokuapp.com/api/v1/category/${this.edited._id}`,
+          editedcategory,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: token,
+            },
+          }
+        )
+        .then((response) => {
+          console.log(response.data);
+          this.$store.state.categories = this.$store.state.categories.map(
+            (category) => {
+              if (category._id === this.edited._id) {
+                return response.data;
+              } else {
+                return category;
+              }
+            }
+          );
+          this.loading = false;
+        })
+
+        .catch(function (e) {
+          console.log(e, "error");
+          this.loading = false;
+        });
+    },
+  },
   watch: {
     // values: function (val) {
     //   if (!val) {
     //     this.$store.state.filtereddesigns = this.$store.state.designs;
     //   }
     // },
-    // forwatch: function (val) {
-    //   console.log("for watch ", val);
-    //   if (val.length == 0) {
-    //     this.isempty = true;
-    //   } else {
-    //     this.isempty = false;
-    //   }
-    // },
+    forwatch: function (val) {
+      console.log("for watch ", val);
+      if (val.length == 0) {
+        this.isempty = true;
+      } else {
+        this.isempty = false;
+      }
+    },
   },
   mounted() {
     // console.log(this.$store.state.designs)
@@ -173,7 +299,7 @@ export default {
       .get(`https://hyponet.herokuapp.com/api/v1/category`)
       .then((response) => {
         this.$store.state.categories = response.data.categories;
-        this.isShow = false;
+        this.isShow = true;
         console.log(
           "this.$store.state.categories",
           this.$store.state.categories
@@ -181,6 +307,7 @@ export default {
       })
       .catch((e) => {
         console.log(e);
+        this.isShow = true;
       });
   },
   computed: {
