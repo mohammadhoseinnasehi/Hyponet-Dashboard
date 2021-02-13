@@ -30,7 +30,6 @@
       :headers="headers"
       :items-per-page="100"
       hide-default-footer
-      
       :items="$store.state.categories"
       sort-by="type"
       class="elevation-1 mb-4"
@@ -111,20 +110,34 @@
               </v-card-text>
             </v-card>
           </v-dialog>
-          <v-dialog v-model="dialogDelete" max-width="500px">
+          <v-dialog v-model="deletedialog" max-width="500px">
             <v-card>
-              <v-card-title class="headline"
-                >Are you sure you want to delete this item?</v-card-title
-              >
+              <v-container>
+                <h4>آیا از حذف طرح مطمئن هستید ؟</h4>
+              </v-container>
+
+              <v-divider></v-divider>
+
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="closeDelete"
-                  >Cancel</v-btn
+                <v-btn
+                  @click="delet()"
+                  color="rgb(1, 8, 77)"
+                  elevation="5"
+                  text
                 >
-                <v-btn color="blue darken-1" text @click="deleteItemConfirm"
-                  >OK</v-btn
+                  تایید
+                  <v-icon right> mdi-checkbox-marked-circle </v-icon>
+                </v-btn>
+                <v-btn
+                  @click="deletedialog = false"
+                  color="rgb(1, 8, 77)"
+                  elevation="5"
+                  text
                 >
-                <v-spacer></v-spacer>
+                  لغو
+                  <v-icon right> mdi-close-circle </v-icon>
+                </v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -152,6 +165,20 @@
               size="64"
             ></v-progress-circular>
             <div class="mt-6 mx-auto">در حال اعمال تغییرات ...</div>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-overlay>
+    <v-overlay :value="isdelete" absolute z-index="10000">
+      <v-container justify-content-center>
+        <v-row>
+          <v-col>
+            <v-progress-circular
+              class="mx-auto"
+              indeterminate
+              size="64"
+            ></v-progress-circular>
+            <div class="mt-6 mx-auto">در حال حذف طرح ...</div>
           </v-col>
         </v-row>
       </v-container>
@@ -194,9 +221,11 @@ export default {
       isShow: false,
       loading: false,
       isempty: false,
+      isdelete: false,
       items: ["طرح", "قالب", "موشن گرافی"],
       values: "",
       edited: {},
+      deletedid: null,
       editdialog: false,
       deletedialog: false,
       headers: [
@@ -271,6 +300,39 @@ export default {
         .catch(function (e) {
           console.log(e, "error");
           this.loading = false;
+        });
+    },
+    deleteItem(item) {
+      this.deletedialog = true;
+      this.deletedid = item._id;
+    },
+    delet() {
+      const token = "32323JUHUHIUH63t6253523KSCJKH()1123(22((@)";
+      this.deletedialog = false;
+      this.$vuetify.goTo(350, { duration: 0 });
+      this.isdelete = true;
+      axios
+        .delete(
+          `https://hyponet.herokuapp.com/api/v1/category/${this.deletedid}`,
+          {
+            headers: {
+              Authorization: token,
+            },
+          }
+        )
+        .then((response) => {
+          console.log(response.data);
+          this.$store.state.categories = this.$store.state.categories.filter(
+            (category) => {
+              return category._id !== this.deletedid;
+            }
+          );
+
+          this.isdelete = false;
+        })
+        .catch(function (e) {
+          console.log("error", e);
+          this.isdelete = false;
         });
     },
   },
