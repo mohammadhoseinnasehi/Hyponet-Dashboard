@@ -64,6 +64,11 @@ export default {
           link: "/templatemanage",
         },
         {
+          title: "مدیریت موشن گرافی ها",
+          icon: "mdi-video-wireless-outline",
+          link: "/motionmanage",
+        },
+        {
           title: "مدیریت دسته بندی ها",
           icon: "mdi-clipboard-list-outline",
           link: "/categorymanage",
