@@ -13,7 +13,7 @@
     <v-card class="mt-1 mb-1" v-if="isget">
       <v-toolbar color="rgb(1, 8, 50)">
         <v-toolbar-title class="white--text">
-          <h5>ویرایش طرح</h5>
+          <h5>ویرایش موشن</h5>
         </v-toolbar-title>
         <v-spacer></v-spacer>
         <v-icon>mdi-close</v-icon>
@@ -23,8 +23,8 @@
           <v-row>
             <v-col cols="12" lg="6">
               <v-text-field
-                v-model="design.title"
-                label="نام طرح"
+                v-model="motion.title"
+                label="عنوان موشن"
                 filled
                 rounded
                 dense
@@ -53,7 +53,7 @@
                   ></v-text-field>
                 </template>
                 <v-date-picker
-                  v-model="design.created_at"
+                  v-model="motion.created_at"
                   locale="fa"
                   no-title
                   :first-day-of-week="6"
@@ -63,9 +63,8 @@
             </v-col>
             <v-col cols="12" lg="12">
               <v-autocomplete
-                v-model="design.category"
+                v-model="motion.category"
                 :items="items"
-                deletable-chips
                 chips
                 color="rgb(1, 8, 77)"
                 item-color="rgb(1, 8, 77)"
@@ -77,7 +76,7 @@
             <v-col cols="12" lg="12">
               <v-textarea
                 label="توضیحات"
-                v-model="design.subtitle"
+                v-model="motion.subtitle"
                 auto-grow
                 filled
                 rounded
@@ -86,10 +85,21 @@
               ></v-textarea>
             </v-col>
             <v-col cols="12" lg="12">
+                <v-text-field
+                  label="لینک موشن گرافی"
+                  v-model="motion.video"
+                  auto-grow
+                  filled
+                  rounded
+                  rows="1"
+                  row-height="15"
+                ></v-text-field>
+              </v-col>
+            <v-col cols="12" lg="12">
               <v-file-input
-                @change="previewimage(image_low)"
-                v-model="image_low"
-                label="تصویر طرح ( با کیفیت پایین )"
+                @change="previewimage(image)"
+                v-model="image"
+                label="تصاویر موشن "
                 filled
                 rounded
                 prepend-icon=""
@@ -99,52 +109,22 @@
                 append-icon="mdi-camera"
               ></v-file-input>
             </v-col>
-            <v-col cols="12" lg="12">
+            <!-- <v-col cols="12" lg="12">
               <v-card
-                v-show="design.image1"
+                v-show="motion.imagesPath[0]"
                 max-height="400px"
                 max-width="600px"
                 class="mx-auto rounded-xl"
               >
                 <v-img
-                  :src="url_low"
+                  :src="url"
                   max-height="400px"
                   max-width="600px"
                   @load="img1_isload = true"
                 >
                 </v-img>
               </v-card>
-            </v-col>
-            <v-col cols="12" lg="12">
-              <v-file-input
-                @change="previewimage(image_high)"
-                v-model="image_high"
-                label="تصویر طرح ( با کیفیت بالا )"
-                prepend-icon=""
-                filled
-                rounded
-                show-size
-                truncate-length="50"
-                dense
-                append-icon="mdi-camera"
-              ></v-file-input>
-            </v-col>
-            <v-col cols="12" lg="12">
-              <v-card
-                max-height="400px"
-                v-show="design.image2"
-                max-width="600px"
-                class="mx-auto rounded-xl"
-              >
-                <v-img
-                  :src="url_high"
-                  max-height="400px"
-                  max-width="600px"
-                  @load="img2_isload = true"
-                >
-                </v-img>
-              </v-card>
-            </v-col>
+            </v-col> -->
             <v-row class="mt-8">
               <v-container>
                 <v-col class="mt-4 d-flex justify-space-between">
@@ -284,7 +264,7 @@ import moment from "moment-jalaali";
 import "moment/locale/fa";
 import axios from "axios";
 export default {
-  name: "DesignPost",
+  name: "MotionPost",
   data() {
     return {
       edit_dialog: false,
@@ -292,22 +272,19 @@ export default {
       loading: false,
       isget: false,
       isdelete: false,
-      img1_isload: false,
-      img2_isload: false,
+      // img1_isload: false,
+      // img2_isload: false,
       menu: false,
       design: {},
       // items: ["uii", "uxx", "icon", "template", "html"],
       items: [
-        "اچ تی ام ال",
-        "قالب آماده",
-        "آیکون",
-        "تجربه کاربری",
-        "رابط کاربری",
+        "تیزر",
+        
       ],
-      url_low: null,
-      url_high: null,
-      image_low: null,
-      image_high: null,
+      // url_low: null,
+      // url_high: null,
+      // image_low: null,
+      // image_high: null,
     };
   },
   methods: {
@@ -319,16 +296,16 @@ export default {
       var idd = this.$route.params.id;
       console.log(idd);
       axios
-        .get(`https://hyponet.herokuapp.com/api/v1/design/${idd}`)
+        .get(`https://hyponet.herokuapp.com/api/v1/motion/${idd}`)
         .then((response) => {
           console.log(idd);
-          this.design = response.data;
-          this.url_low = `https://hyponet.herokuapp.com${this.design.image1}`;
-          this.url_high = `https://hyponet.herokuapp.com${this.design.image2}`;
-          this.design.category = this.$t(this.design.category);
+          this.motion = response.data;
+          // this.url_low = `https://hyponet.herokuapp.com${this.design.image1}`;
+          // this.url_high = `https://hyponet.herokuapp.com${this.design.image2}`;
+          this.motion.category = this.$t(this.motion.category);
           this.isget = true;
-          console.log("url", this.url_low);
-          console.log("in the getdata function", this.design);
+          // console.log("url", this.url_low);
+          console.log("in the getdata function", this.motion);
           console.log("get data is finish");
         })
         .catch((e) => {
@@ -338,20 +315,21 @@ export default {
         });
     },
     previewimage(image) {
-      if (image == this.image_low) {
-        if (!image) {
-          this.url_low = null;
-        } else {
-          this.url_low = URL.createObjectURL(image);
-        }
-      }
-      if (image == this.image_high) {
-        if (!image) {
-          this.url_high = null;
-        } else {
-          this.url_high = URL.createObjectURL(image);
-        }
-      }
+      // if (image == this.image_low) {
+      //   if (!image) {
+      //     this.url_low = null;
+      //   } else {
+      //     this.url_low = URL.createObjectURL(image);
+      //   }
+      // }
+      // if (image == this.image_high) {
+      //   if (!image) {
+      //     this.url_high = null;
+      //   } else {
+      //     this.url_high = URL.createObjectURL(image);
+      //   }
+      // }
+      console.log(image)
     },
     //return a promise that resolves with a File instance
     // urltoFile(url, filename, mimeType) {
@@ -388,16 +366,16 @@ export default {
 
     // async
     edit() {
-      var edited_design = {
-        category: this.$t(this.design.category),
-        title: this.design.title,
-        subtitle: this.design.subtitle,
-        created_at: this.design.created_at,
+      var edited_motion = {
+        category: this.$t(this.motion.category),
+        title: this.motion.title,
+        subtitle: this.motion.subtitle,
+        created_at: this.motion.created_at,
       };
 
       var formData = new FormData();
-      for (var key in edited_design) {
-        formData.append(key, edited_design[key]);
+      for (var key in edited_motion) {
+        formData.append(key, edited_motion[key]);
       }
       this.edit_dialog = false;
       this.$vuetify.goTo(350, { duration: 0 });
@@ -432,9 +410,11 @@ export default {
       // } else {
       //   formData.append("image1", this.image_low);
       // }
-      if (this.image_low !== null) {
+
+
+      // if (this.image_low !== null) {
         formData.append("image1", this.image_low);
-      }
+      // }
 
       //*************************************************************************************** */
       // if (this.image_high === null) {
@@ -466,9 +446,9 @@ export default {
       //   formData.append("image2", this.image_high);
       // }
 
-      if (this.image_high !== null) {
-        formData.append("image2", this.image_high);
-      }
+      // if (this.image_high !== null) {
+      //   formData.append("image2", this.image_high);
+      // }
 
       //***************************************************************************************
       for (var pair of formData.entries()) {
@@ -476,10 +456,10 @@ export default {
       }
       //***************************************************************************************
       const token = "32323JUHUHIUH63t6253523KSCJKH()1123(22((@)";
-      var design_id = this.$route.params.id;
+      var motion_id = this.$route.params.id;
       axios
         .put(
-          `https://hyponet.herokuapp.com/api/v1/design/${design_id}`,
+          `https://hyponet.herokuapp.com/api/v1/design/${motion_id}`,
           formData,
           {
             headers: {
@@ -490,12 +470,12 @@ export default {
         )
         .then((response) => {
           console.log(response.data);
-          if (this.$store.state.filtereddesigns.length > 0) {
-            var ne = this.$store.state.filtereddesigns.map((design) => {
-              if (design._id === design_id) {
+          if (this.$store.state.filteredmotions.length > 0) {
+            var ne = this.$store.state.filteredmotions.map((motion) => {
+              if (motion._id === motion_id) {
                 return response.data;
               } else {
-                return design;
+                return motion;
               }
             });
             this.$store.state.filtereddesigns = ne;
@@ -515,13 +495,13 @@ export default {
     },
     delet() {
       const token = "32323JUHUHIUH63t6253523KSCJKH()1123(22((@)";
-      var design_id = this.$route.params.id;
+      var motion_id = this.$route.params.id;
       this.delete_dialog = false;
       this.$vuetify.goTo(350, { duration: 0 });
       this.isdelete = true;
       axios
         .delete(
-          `https://hyponet.herokuapp.com/api/v1/design/${design_id}`,
+          `https://hyponet.herokuapp.com/api/v1/motion/${motion_id}`,
 
           {
             headers: {
@@ -531,14 +511,14 @@ export default {
         )
         .then((response) => {
           console.log(response.data);
-          if (this.$store.state.filtereddesigns.length > 0) {        
-            this.$store.state.filtereddesigns = this.$store.state.filtereddesigns.filter(
-              (design) => {
-                return design._id !== design_id;
+          if (this.$store.state.filteredmotions.length > 0) {        
+            this.$store.state.filteredmotions = this.$store.state.filteredmotions.filter(
+              (motion) => {
+                return motion._id !== motion_id;
               }
             );
           }
-          this.$router.push({ name: "Designmanage" });
+          this.$router.push({ name: "Motionmanage" });
           this.isdelete = false;
         })
         .catch(function (e) {
@@ -554,8 +534,8 @@ export default {
     $route: function (to, from) {
       // console.log(to)
       console.log(from);
-      if (to.name == "DesignPosts") {
-        this.design = {};
+      if (to.name == "MotionPosts") {
+        this.motion = {};
         this.getdata();
       }
     },
@@ -563,13 +543,13 @@ export default {
   computed: {
     dateformatted() {
       moment.loadPersian({ dialect: "persian-modern" });
-      return this.design.created_at
-        ? moment(this.design.created_at).format("jDD / jMM / jYYYY ")
+      return this.motion.created_at
+        ? moment(this.motion.created_at).format("jDD / jMM / jYYYY ")
         : "";
     },
   },
   mounted() {
-    console.log(this.$store.state.filtereddesigns);
+    console.log(this.$store.state.filteredmotions);
     this.getdata();
   },
 };

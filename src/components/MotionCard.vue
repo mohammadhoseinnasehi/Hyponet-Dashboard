@@ -4,20 +4,20 @@
     max-width="350px"
     hover
     :ripple="false"
-    :to="{ path: `/designmanage/posts/${design._id}` }"
+    :to="{ path: `/motionmanage/posts/${motion._id}`}"
   >
       <v-img
-        :src="`https://hyponet.herokuapp.com${design.image1}`"
+        :src="`https://hyponet.herokuapp.com${motion.imagesPath[0]}`"
         height="250px"
         max-width="350px"
       ></v-img>
-    <v-card-title> {{ design.title }} </v-card-title>
+    <v-card-title> {{ motion.title }} </v-card-title>
     <v-divider></v-divider>
     <v-card-subtitle> {{ dateformatted }} </v-card-subtitle>
 
     <v-card-actions>
       <v-btn color="orange lighten-2" text @click.prevent="show = !show">
-        بیشتر
+        لینک ویدئو
       </v-btn>
 
       <v-spacer></v-spacer>
@@ -32,7 +32,7 @@
         <v-divider></v-divider>
 
         <v-card-text>
-          {{ design.subtitle }}
+          {{ motion.video }}
         </v-card-text>
       </div>
     </v-expand-transition>
@@ -44,7 +44,7 @@ import moment from "moment-jalaali";
 import "moment/locale/fa";
 export default {
   name: "DesignCard",
-  props: { design: Object },
+  props: { motion: Object },
   data() {
     return { show: false };
   },
@@ -52,8 +52,8 @@ export default {
   computed: {
     dateformatted() {
       moment.loadPersian({ dialect: "persian-modern" });
-      return this.design.created_at
-        ? moment(this.design.created_at).format("jDD / jMM / jYYYY ")
+      return this.motion.created_at
+        ? moment(this.motion.created_at).format("jDD / jMM / jYYYY ")
         : "";
     },
   },

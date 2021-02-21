@@ -1,7 +1,7 @@
 <template>
   <v-row justify="center">
     <v-dialog
-      v-model="$store.state.designshow"
+      v-model="$store.state.motionshow"
       transition="dialog-bottom-transition"
       persistent
       :scrollable="true"
@@ -10,7 +10,7 @@
       <v-card max-height="600px">
         <v-toolbar color="rgb(1, 8, 50)">
           <v-toolbar-title class="white--text"
-            ><h5>افزودن طرح</h5></v-toolbar-title
+            ><h5>افزودن موشن گرافی</h5></v-toolbar-title
           >
           <v-spacer></v-spacer>
           <v-btn icon class="" dark @click.stop="hide()">
@@ -23,7 +23,7 @@
               <v-col cols="12" lg="6">
                 <v-text-field
                   v-model="name"
-                  label="نام طرح"
+                  label="عنوان موشن گرافی"
                   filled
                   rounded
                   dense
@@ -85,12 +85,24 @@
                 ></v-textarea>
               </v-col>
               <v-col cols="12" lg="12">
-                <v-file-input
-                  @change="previewimage(image_low)"
-                  v-model="image_low"
-                  label="تصویر طرح ( با کیفیت پایین )"
+                <v-text-field
+                  label="لینک موشن گرافی"
+                  v-model="motionlink"
+                  auto-grow
                   filled
                   rounded
+                  rows="1"
+                  row-height="15"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" lg="12">
+                <v-file-input
+                  @change="previewimage(images)"
+                  v-model="images"
+                  label="تصاویر مربوط "
+                  filled
+                  rounded
+                  multiple
                   prepend-icon=""
                   show-size
                   truncate-length="50"
@@ -101,39 +113,16 @@
               <v-col cols="12" lg="12">
                 <v-card
                   max-height="400px"
-                  v-show="url_low"
+                  v-for="url in urls"
+                  :key="url"
                   max-width="600px"
                   class="mx-auto rounded-xl"
                 >
-                  <v-img :src="url_low" max-height="400px" max-width="600px">
+                  <v-img :src="url" max-height="400px" max-width="600px">
                   </v-img>
                 </v-card>
               </v-col>
-              <v-col cols="12" lg="12">
-                <v-file-input
-                  @change="previewimage(image_high)"
-                  v-model="image_high"
-                  label="تصویر طرح ( با کیفیت بالا )"
-                  prepend-icon=""
-                  filled
-                  rounded
-                  show-size
-                  truncate-length="50"
-                  dense
-                  append-icon="mdi-camera"
-                ></v-file-input>
-              </v-col>
-              <v-col cols="12" lg="12">
-                <v-card
-                  max-height="400px"
-                  v-show="url_high"
-                  max-width="600px"
-                  class="mx-auto rounded-xl"
-                >
-                  <v-img :src="url_high" max-height="400px" max-width="600px">
-                  </v-img>
-                </v-card>
-              </v-col>
+
               <v-col cols="3">
                 <v-btn
                   @click="send()"
@@ -181,44 +170,41 @@ export default {
       date: new Date().toISOString().substr(0, 10),
       menu: false,
       description: "",
-      image_low: null,
-      image_high: null,
-      url_low: null,
-      url_high: null,
-      // items: ["uii", "uxx", "icon", "template", "html"],
-      items: [
-        "اچ تی ام ال",
-        "قالب آماده",
-        "آیکون",
-        "تجربه کاربری",
-        "رابط کاربری",
-      ],
+      motionlink: "",
+      images: [],
+      urls: [],
+      items: ["تیزر"],
       values: "",
       loading: false,
     };
   },
   methods: {
     hide() {
-      this.$store.state.designshow = false;
+      this.$store.state.motionshow = false;
     },
 
     send() {
       this.loading = true;
-      this.$store.state.designshow = false;
-      var new_design = {
+      this.$store.state.motionshow = false;
+      var new_motion = {
         category: this.$t(this.values),
         title: this.name,
         subtitle: this.description,
         created_at: this.date,
+        video: this.motionlink,
       };
 
       var formData = new FormData();
-      for (var key in new_design) {
-        formData.append(key, new_design[key]);
+      for (var key in new_motion) {
+        formData.append(key, new_motion[key]);
       }
-      // console.log("this.image_low",this.image_low)
-      formData.append("image1", this.image_low);
-      formData.append("image2", this.image_high);
+      // console.log("this.image",this.image)
+      console.log(this.images.length);
+      console.log(this.images);
+
+      for (var i in this.images) {
+        formData.append(i, this.images[i]);
+      }
 
       console.log(this.date);
       console.log(typeof this.date);
@@ -229,7 +215,7 @@ export default {
       var that = this;
       const token = "32323JUHUHIUH63t6253523KSCJKH()1123(22((@)";
       axios
-        .post("https://hyponet.herokuapp.com/api/v1/design", formData, {
+        .post("https://hyponet.herokuapp.com/api/v1/motion", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
             Authorization: token,
@@ -237,31 +223,22 @@ export default {
         })
         .then((response) => {
           that.loading = false;
-          this.$store.state.filtereddesigns.push(response.data);
+          this.$store.state.filteredmotions.push(response.data);
           console.log(response.data);
         })
 
-        .catch(function () {
+        .catch(function (e) {
           that.loading = false;
+          console.log(e);
           console.log("FAILURE!!");
         });
     },
 
-    previewimage(image) {
-      if (image == this.image_low) {
-        if (!image) {
-          this.url_low = null;
-        } else {
-          this.url_low = URL.createObjectURL(image);
-        }
-      }
-      if (image == this.image_high) {
-        if (!image) {
-          this.url_high = null;
-        } else {
-          this.url_high = URL.createObjectURL(image);
-        }
-      }
+    previewimage(images) {
+      // for(var image in images) {
+      //   this.urls.push(URL.createObjectURL(image));
+      // }
+      console.log(images);
     },
   },
   mounted() {
